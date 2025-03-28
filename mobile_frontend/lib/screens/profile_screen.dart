@@ -6,144 +6,111 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text('Profil'),
-        elevation: 0,
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Profil',
+          style: TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              // Ayarlar sayfasına yönlendirme
+              // TODO: Ayarlar sayfasına yönlendir
             },
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Profil Başlığı
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.grey.withAlpha(128),
-              ),
-              child: Column(
-                children: [
-                  const CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(
-                      'https://source.unsplash.com/random/150x150/?portrait',
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Kullanıcı Adı',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'kullanici@email.com',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const CircleAvatar(
+            radius: 50,
+            backgroundColor: Colors.pink,
+            child: Icon(
+              Icons.person,
+              size: 50,
+              color: Colors.white,
             ),
-
-            // İstatistikler
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildStatItem('Tarifler', '12'),
-                  _buildStatItem('Favoriler', '24'),
-                  _buildStatItem('Takipçiler', '156'),
-                  _buildStatItem('Takip', '89'),
-                ],
-              ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Misafir Kullanıcı',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
-
-            const Divider(),
-
-            // Menü Öğeleri
-            ListTile(
-              leading: const Icon(Icons.bookmark),
-              title: const Text('Favori Tariflerim'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Favori tarifler sayfasına yönlendirme
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.add_circle_outline),
-              title: const Text('Tarif Ekle'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Tarif ekleme sayfasına yönlendirme
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.history),
-              title: const Text('Son Görüntülenenler'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Son görüntülenenler sayfasına yönlendirme
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.notifications),
-              title: const Text('Bildirimler'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Bildirimler sayfasına yönlendirme
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.help_outline),
-              title: const Text('Yardım ve Destek'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Yardım sayfasına yönlendirme
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Çıkış Yap'),
-              onTap: () {
-                // Çıkış işlemi
-              },
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 32),
+          _buildProfileMenuItem(
+            icon: Icons.favorite,
+            title: 'Favori Tariflerim',
+            onTap: () {
+              // TODO: Favori tariflere yönlendir
+            },
+          ),
+          _buildProfileMenuItem(
+            icon: Icons.history,
+            title: 'Son Görüntülenenler',
+            onTap: () {
+              // TODO: Son görüntülenenlere yönlendir
+            },
+          ),
+          _buildProfileMenuItem(
+            icon: Icons.add_circle,
+            title: 'Tarif Ekle',
+            onTap: () {
+              // TODO: Tarif ekleme sayfasına yönlendir
+            },
+          ),
+          _buildProfileMenuItem(
+            icon: Icons.notifications,
+            title: 'Bildirimler',
+            onTap: () {
+              // TODO: Bildirimlere yönlendir
+            },
+          ),
+          _buildProfileMenuItem(
+            icon: Icons.help,
+            title: 'Yardım',
+            onTap: () {
+              // TODO: Yardım sayfasına yönlendir
+            },
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildStatItem(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          value,
+  Widget _buildProfileMenuItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.pink),
+        title: Text(
+          title,
           style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
-        ),
-      ],
+        trailing: const Icon(Icons.chevron_right),
+        onTap: onTap,
+      ),
     );
   }
 } 

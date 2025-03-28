@@ -1,95 +1,62 @@
 import 'package:flutter/material.dart';
+import '../services/api_service.dart';
+import 'recipe_detail_screen.dart';
 
 class SearchScreen extends StatelessWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  SearchScreen({super.key});
+
+  final ApiService _apiService = ApiService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text('Tarif Ara'),
-        elevation: 0,
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Tarif Ara',
+          style: TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Arama Çubuğu
             TextField(
               decoration: InputDecoration(
-                hintText: 'Tarif ara...',
+                hintText: 'Tarif aramak için yazın...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 filled: true,
-                fillColor: Colors.grey[100],
+                fillColor: Colors.white,
               ),
+              onTap: () {
+                showSearch(
+                  context: context,
+                  delegate: RecipeSearchDelegate(_apiService),
+                );
+              },
+              readOnly: true,
             ),
-            const SizedBox(height: 20),
-
-            // Filtreler
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.filter_list),
-                    label: const Text('Filtreler'),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
-                  ),
-                ),
-              ],
+            const SizedBox(height: 24),
+            Icon(
+              Icons.search,
+              size: 64,
+              color: Colors.grey.shade400,
             ),
-            const SizedBox(height: 20),
-
-            // Popüler Aramalar
-            const Text(
-              'Popüler Aramalar',
+            const SizedBox(height: 16),
+            Text(
+              'Binlerce tarif arasında arama yapın',
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _buildPopularSearchChip('Kek'),
-                _buildPopularSearchChip('Pilav'),
-                _buildPopularSearchChip('Makarna'),
-                _buildPopularSearchChip('Salata'),
-                _buildPopularSearchChip('Çorba'),
-                _buildPopularSearchChip('Börek'),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // Son Aramalar
-            const Text(
-              'Son Aramalar',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: const Icon(Icons.history),
-                    title: Text('Son Arama ${index + 1}'),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {},
-                    ),
-                  );
-                },
+                fontSize: 16,
+                color: Colors.grey.shade600,
               ),
             ),
           ],
@@ -97,11 +64,145 @@ class SearchScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildPopularSearchChip(String label) {
-    return ActionChip(
-      label: Text(label),
-      onPressed: () {},
+class RecipeSearchDelegate extends SearchDelegate<String> {
+  final ApiService _apiService;
+  
+  RecipeSearchDelegate(this._apiService);
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, '');
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return _buildSearchResults();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return _buildSearchResults();
+  }
+
+  Widget _buildSearchResults() {
+    if (query.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.search, size: 64, color: Colors.grey.shade400),
+            const SizedBox(height: 16),
+            Text(
+              'Tarif aramak için yazın',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: _apiService.searchRecipes(query),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, size: 64, color: Colors.grey.shade400),
+                const SizedBox(height: 16),
+                Text(
+                  'Bir hata oluştu',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        final recipes = snapshot.data ?? [];
+
+        if (recipes.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.restaurant_menu,
+                  size: 64,
+                  color: Colors.grey.shade400,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Henüz tarif bulunmuyor',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.builder(
+          itemCount: recipes.length,
+          itemBuilder: (context, index) {
+            final recipe = recipes[index];
+            return ListTile(
+              leading: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(Icons.restaurant, color: Colors.grey.shade400),
+              ),
+              title: Text(recipe['title'] ?? ''),
+              subtitle: Text(recipe['preparation_time'] ?? ''),
+              trailing: Text('${recipe['views'] ?? 0} görüntülenme'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RecipeDetailScreen(recipe: recipe),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 } 

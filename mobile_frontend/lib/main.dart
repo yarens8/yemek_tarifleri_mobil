@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
 import 'screens/main_screen.dart';
+import 'providers/recipe_provider.dart';
 
 void main() {
-  // Logging konfigürasyonu
-  Logger.root.level = Level.ALL;
-  Logger.root.onRecord.listen((record) {
-    debugPrint('${record.level.name}: ${record.time}: ${record.message}');
-  });
-  
   runApp(const MyApp());
 }
 
@@ -17,24 +12,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Lezzetli Tarifler',
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          iconTheme: IconThemeData(color: Colors.black),
-          titleTextStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+    return ChangeNotifierProvider(
+      create: (_) => RecipeProvider(),
+      child: MaterialApp(
+        title: 'Lezzetli Tarifler',
+        theme: ThemeData(
+          primarySwatch: Colors.pink,
+          scaffoldBackgroundColor: Colors.grey[50],
         ),
+        home: const MainScreen(),
       ),
-      home: const MainScreen(),
     );
   }
 }

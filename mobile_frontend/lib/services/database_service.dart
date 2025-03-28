@@ -4,12 +4,12 @@ import 'package:logging/logging.dart';
 
 class DatabaseService {
   static final _logger = Logger('DatabaseService');
-  static const String baseUrl = 'http://192.168.1.103:5000/api'; // Flask API adresi
+  static const String baseUrl = 'http://10.0.2.2:5000/api'; // Android Emulator için localhost
 
   static Future<List<Map<String, dynamic>>> query(String endpoint) async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/$endpoint'));
-      
+
       if (response.statusCode == 200) {
         _logger.info('API çağrısı başarılı: $endpoint');
         return List<Map<String, dynamic>>.from(jsonDecode(response.body));
@@ -22,7 +22,8 @@ class DatabaseService {
     }
   }
 
-  static Future<void> execute(String endpoint, Map<String, dynamic> data) async {
+  static Future<void> execute(
+      String endpoint, Map<String, dynamic> data) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/$endpoint'),
@@ -50,11 +51,12 @@ class DatabaseService {
     return await query('recipes');
   }
 
-  static Future<List<Map<String, dynamic>>> getRecipesByCategory(int categoryId) async {
+  static Future<List<Map<String, dynamic>>> getRecipesByCategory(
+      int categoryId) async {
     return await query('recipes/category/$categoryId');
   }
 
   static Future<void> addRecipe(Map<String, dynamic> recipeData) async {
     await execute('recipes', recipeData);
   }
-} 
+}

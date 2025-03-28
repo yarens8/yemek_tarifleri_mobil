@@ -1,75 +1,43 @@
 class Recipe {
-  final int id;
+  final int recipeId;
   final String title;
-  final String ingredients;
-  final String instructions;
-  final String createdAt;
-  final int userId;
+  final String description;
   final int categoryId;
-  final int views;
-  final String servingSize;
-  final String preparationTime;
-  final String cookingTime;
-  final String tips;
+  final int viewCount;
+  final String categoryName;
   final String imageUrl;
-  final String ingredientsSections;
-  final String username;
 
   Recipe({
-    required this.id,
+    required this.recipeId,
     required this.title,
-    required this.ingredients,
-    required this.instructions,
-    required this.createdAt,
-    required this.userId,
+    required this.description,
     required this.categoryId,
-    required this.views,
-    required this.servingSize,
-    required this.preparationTime,
-    required this.cookingTime,
-    required this.tips,
+    required this.viewCount,
+    required this.categoryName,
     required this.imageUrl,
-    required this.ingredientsSections,
-    required this.username,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
     return Recipe(
-      id: json['id']?.toInt() ?? 0,
-      title: json['title']?.toString() ?? '',
-      ingredients: json['ingredients']?.toString() ?? '',
-      instructions: json['instructions']?.toString() ?? '',
-      createdAt: json['created_at']?.toString() ?? '',
-      userId: json['user_id']?.toInt() ?? 0,
-      categoryId: json['category_id']?.toInt() ?? 0,
-      views: json['views']?.toInt() ?? 0,
-      servingSize: json['serving_size']?.toString() ?? '',
-      preparationTime: json['preparation_time']?.toString() ?? '',
-      cookingTime: json['cooking_time']?.toString() ?? '',
-      tips: json['tips']?.toString() ?? '',
-      imageUrl: json['image_url']?.toString() ?? '',
-      ingredientsSections: json['ingredients_sections']?.toString() ?? '',
-      username: json['username']?.toString() ?? '',
+      recipeId: json['RecipeID'] ?? 0,
+      title: json['Title'] ?? '',
+      description: json['Description'] ?? '',
+      categoryId: json['CategoryID'] ?? 0,
+      viewCount: json['ViewCount'] ?? 0,
+      categoryName: json['CategoryName'] ?? '',
+      imageUrl: json['ImageURL'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'title': title,
-      'ingredients': ingredients,
-      'instructions': instructions,
-      'created_at': createdAt,
-      'user_id': userId,
-      'category_id': categoryId,
-      'views': views,
-      'serving_size': servingSize,
-      'preparation_time': preparationTime,
-      'cooking_time': cookingTime,
-      'tips': tips,
-      'image_url': imageUrl,
-      'ingredients_sections': ingredientsSections,
-      'username': username,
+      'RecipeID': recipeId,
+      'Title': title,
+      'Description': description,
+      'CategoryID': categoryId,
+      'ViewCount': viewCount,
+      'CategoryName': categoryName,
+      'ImageURL': imageUrl,
     };
   }
 } 
